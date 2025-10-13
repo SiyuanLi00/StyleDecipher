@@ -7,10 +7,11 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report, f1_score, pairwise_distances
-from style import model, tokenizer, get_all_embeddings
+from style import get_all_embeddings, create_style_processor, StyleConfig
+
+style_processor, style_model, style_tokenizer, style_params = create_style_processor()
 
 def load_json(filename, default_value):
-    """从文件加载 JSON 数据，如果文件不存在则返回默认值"""
     try:
         with open(filename, 'r', encoding='utf-8') as f:
             return json.load(f)
@@ -21,29 +22,9 @@ def load_json(filename, default_value):
         print(f"加载 {filename} 时出错: {e}")
         return default_value
 
-DOMAIN_PATH = "dataset/Yelp Review/yelp_mixed_data_combine.json"
-REWRITE_DATA_PATH = "mix_result/yelp_rewrite_data.json"
-FEATURE_VECTORS_PATH = "mix_result/yelp_feature_vectors.json"
-
-DOMAIN_PATH = "dataset/News/news_mixed_data_combine.json"
-REWRITE_DATA_PATH = "mix_result/news_rewrite_data.json"
-FEATURE_VECTORS_PATH = "mix_result/news_feature_vectors.json"
-
-DOMAIN_PATH = "dataset/HumanEval Code/code_mixed_data_combine.json"
-REWRITE_DATA_PATH = "mix_result/code_rewrite_data.json"
-FEATURE_VECTORS_PATH = "mix_result/code_feature_vectors.json"
-
 DOMAIN_PATH = "dataset/Student Essay/essay_mixed_data_combine.json"
 REWRITE_DATA_PATH = "mix_result/essay_rewrite_data.json"
 FEATURE_VECTORS_PATH = "mix_result/essay_feature_vectors.json"
-
-DOMAIN_PATH = "dataset/att1_combine.json"
-REWRITE_DATA_PATH = "RAID_result/att1_rewrite_data.json"
-FEATURE_VECTORS_PATH = "RAID_result/att1_feature_vectors.json"
-
-DOMAIN_PATH = "dataset/att2_combine.json"
-REWRITE_DATA_PATH = "RAID_result/att2_rewrite_data.json"
-FEATURE_VECTORS_PATH = "RAID_result/att2_feature_vectors.json"
 
 DOMAIN_PATH = "dataset/att3_combine.json"
 REWRITE_DATA_PATH = "RAID_result/att3_rewrite_data.json"
@@ -56,17 +37,10 @@ feature_vectors = load_json(FEATURE_VECTORS_PATH, default_value = [])
 
 def get_first_1024_tokens(text):
     
-    # 获取 GPT-2 编码器（也可以选择其他编码器，如 gpt3、gpt4）
     enc = tiktoken.get_encoding("cl100k_base")
-
-    # 对文本进行编码，获取所有 tokens
     tokens = enc.encode(text)
-
-    # 获取前 128 个 tokens
-    first_128_tokens = tokens[:128]
-
-    # 将 tokens 解码回字符串，返回作为输出
-    decoded_tokens = enc.decode(first_128_tokens)
+    first_1024_tokens = tokens[:1024]
+    decoded_tokens = enc.decode(first_1024_tokens)
     
     return decoded_tokens
 
@@ -110,7 +84,7 @@ def get_stat(index: int):
     
     stat = {"Text": original}
     
-    raw_embedding = get_all_embeddings(original, model, tokenizer)
+    raw_embedding = get_all_embeddings(original, style_model, style_tokenizer, style_params)
     # 对 raw_embedding 进行池化（例如取平均值）
     raw_embedding = np.mean(raw_embedding, axis=0)  # 从 (1, seq_len, embedding_dim) -> (embedding_dim,)
     
@@ -141,7 +115,7 @@ def get_stat(index: int):
                 fuzz.token_set_ratio(original, item[pp])
             ]
             
-            current_embedding = get_all_embeddings(item[pp], model, tokenizer)
+            current_embedding = get_all_embeddings(item[pp], style_model, style_tokenizer, style_params)
             # 对 current_embedding 进行池化
             current_embedding = np.mean(current_embedding, axis=0)  # 从 (1, seq_len, embedding_dim) -> (embedding_dim,)
             

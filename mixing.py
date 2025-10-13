@@ -2,7 +2,6 @@ import json
 import random
 import nltk
 
-# 确保 NLTK 的 punkt 分词器已下载
 try:
     nltk.data.find('tokenizers/punkt')
 except nltk.downloader.DownloadError:
