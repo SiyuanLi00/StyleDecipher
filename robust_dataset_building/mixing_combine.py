@@ -62,12 +62,6 @@ def combine_and_reindex_data(human_file_path, gpt_file_path, output_file_path):
 # Make sure you have 'yelp_human.json' and 'yelp_mixed_data_GPT.json' in the same directory.
 # You can create dummy files for testing if you don't have them yet.
 
-# Example dummy data creation for testing (REMOVE IN PRODUCTION)
-# with open('yelp_human.json', 'w', encoding='utf-8') as f:
-#     json.dump([{"Index": i, "Text": f"Human text {i}.", "Source": "human"} for i in range(1200)], f, indent=4)
-# with open('yelp_mixed_data_GPT.json', 'w', encoding='utf-8') as f:
-#     json.dump([{"Index": i, "Text": f"GPT mixed text {i}.", "Source": "GPT"} for i in range(1000)], f, indent=4)
-
 
 # Call the function with your file paths
 combine_and_reindex_data(
