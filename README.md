@@ -1,12 +1,17 @@
 # StyleDecipher: Robust and Explainable Detection of LLM-Generated Texts with Stylistic Analysis
 
+StyleDecipher is a stylistic analysis-based method for detecting LLM-generated text. The method constructs a unified representation space that combines discrete stylistic indicators with continuous stylistic representations to capture stylistic differences between human and machine-generated text. 
 
 
-## Overview
+Compared to traditional approaches, StyleDecipher offers domain-agnostic detection, robustness against adversarial perturbations, and strong explainability.
 
-StyleDecipher is a robust and explainable detection framework that revisits LLM generated text detection using combined feature extractors to quantify stylistic differences. 
+Here is a framework pipeline of StyleDecipher.
 
+![StyleDecipher Pipeline](figure-pipeline.svg)
 
+*The pipeline jointly models discrete and continuous stylistic representations for robust text authenticity detection.* 
+
+More details can be found in our paper: [StyleDecipher: Robust and Explainable Detection of LLM-Generated Texts with Stylistic Analysis](https://arxiv.org/abs/2510.12608)
 
 ## Installation
 
@@ -35,6 +40,34 @@ conda activate style_decipher
 pip install -r requirements.txt
 ```
 
+## Dataset
+
+StyleDecipher supports evaluation across multiple domains and scenarios. The framework expects datasets in JSON format with the following structure:
+
+### Data Format
+```json
+[
+    {
+        "Index": 1,
+        "Text": "Your text content here...",
+        "Source": "human (or GPT for machine-generated)"
+    }
+]
+```
+
+### Supported Domains
+The following are human-written datasets, with corresponding LLM-generated texts created using GPT-3.5-turbo. StyleDecipher has been evaluated on the following domains:
+
+- **[News](https://huggingface.co/datasets/acmc/ghostbuster_reuter)**: Human-written texts from Reuters_50_50 dataset (2006)
+- **[Student Essays](https://huggingface.co/datasets/qwedsacf/ivypanda-essays)**: Academic writing samples from IvyPanda repository
+- **[HumanEval Code](https://huggingface.co/datasets/openai/openai_humaneval)**: Programming code snippets from HumanEval dataset
+- **[Yelp Reviews](https://huggingface.co/datasets/Yelp/yelp_review_full)**: Restaurant and business reviews from Yelp
+- **[Paper Abstracts](https://huggingface.co/datasets/QiXuanLo/DBLPDataset)**: 500 abstracts sampled from ACL 2023 papers
+
+Additionally, we apply the latest benchmark RAID to test our method:
+
+- **[RAID Dataset](https://github.com/liamdugan/raid)**: RAID is the largest & most comprehensive dataset for evaluating AI-generated text detectors. It contains over 10 million documents spanning 11 LLMs, 11 genres, 4 decoding strategies, and 12 adversarial attacks.
+
 
 
 ## Quick Start
@@ -42,18 +75,7 @@ pip install -r requirements.txt
 ### Basic Usage
 Here we will show you how to use StyleDecipher to extract style features from a dataset. This is also the In-Domain Experiment in the paper.
 
-1. **Prepare your dataset** in the required JSON format:
-```json
-[
-    {
-        "Index": 1,
-        "Text": "Your text content here...",
-        "Source": "human"  // or "GPT" for machine-generated
-    }
-]
-```
-
-1. **Run style extraction and analysis**:
+**Run style extraction and analysis**:
 Set up your config in `main.py` and run `main.py` to extract style features, including openai api key, base url, model name, and file path configuration.
 ```python
 class Config:
@@ -104,13 +126,16 @@ To evaluate the pluggable performance of StyleDecipher, you can run `experiment_
 To evaluate the explainability of StyleDecipher, you can run scripts in `plot/` to visualize data distribution and get explanation metric results.
 
 
+## Citation
+If you use this code as part of your research, please cite:
 
+Siyuan Li, Aodu Wulianghai, Xi Lin, Guangyan Li, Xiang Chen, Jun Wu, Jianhua Li. ["StyleDecipher: Robust and Explainable Detection of LLM-Generated Texts with Stylistic Analysis."](https://arxiv.org/abs/2510.12608) arXiv preprint arXiv:2510.12608 (2025).
 
-
-
-
-
-
-
-
-
+```bibtex
+@article{li2025styledecipher,
+  title={StyleDecipher: Robust and Explainable Detection of LLM-Generated Texts with Stylistic Analysis},
+  author={Li, Siyuan and Wulianghai, Aodu and Lin, Xi and Li, Guangyan and Chen, Xiang and Wu, Jun and Li, Jianhua},
+  journal={arXiv preprint arXiv:2510.12608},
+  year={2025}
+}
+```
