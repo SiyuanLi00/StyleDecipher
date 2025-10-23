@@ -1,8 +1,3 @@
-# Copyright 2023 Lawrence Livermore National Security, LLC and other
-# LUAR Project Developers. 
-#
-# SPDX-License-Identifier: Apache-2.0
-
 def singleton(cls):
     """Decorator for defining a Singleton class.
     """

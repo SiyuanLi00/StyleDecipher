@@ -10,15 +10,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report, f1_score, roc_auc_score
 
 def load_json(filename, default_value):
-    """从文件加载 JSON 数据，如果文件不存在则返回默认值"""
+    """Load JSON data from file, return default value if file does not exist"""
     try:
         with open(filename, 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
-        print(f"{filename} 不存在，加载默认值。")
+        print(f"{filename} does not exist, loading default value.")
         return default_value
     except Exception as e:
-        print(f"加载 {filename} 时出错: {e}")
+        print(f"Error loading {filename}: {e}")
         return default_value
 
 def get_classify_data(data, vectors):
@@ -70,18 +70,18 @@ def xgboost_classifier(train_data, train_vectors, test_data, test_vectors):
     x_test = scaler.transform(x_test)
     
     clf = MLPClassifier(
-        hidden_layer_sizes=(10,),  # 定义隐藏层大小为 10 个神经元
-        max_iter=1000,  # 最大迭代次数为 1000
-        activation='relu',  # 激活函数为 ReLU
-        solver='adam',  # 优化算法为 Adam
-        random_state=42  # 随机种子
+        hidden_layer_sizes=(10,), 
+        max_iter=1000,  
+        activation='relu',
+        solver='adam',  
+        random_state=42 
     )
     
     clf.fit(x_train, y_train)
     
     y_pred = clf.predict(x_test)
     
-    model = xgb.XGBClassifier(objective="binary:logistic", n_estimators=10, random_state=42) # 74.44\%,  turn out for reuter: 62%
+    model = xgb.XGBClassifier(objective="binary:logistic", n_estimators=10, random_state=42) 
     model.fit(x_train, y_train)
     y_pred = model.predict(x_test)
     

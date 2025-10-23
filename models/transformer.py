@@ -1,8 +1,3 @@
-# Copyright 2023 Lawrence Livermore National Security, LLC and other
-# LUAR Project Developers. 
-#
-# SPDX-License-Identifier: Apache-2.0
-
 import os
 from functools import partial
 
@@ -37,7 +32,7 @@ class Transformer(LightningTrainer):
         }
         modelname = transformer_modelnames[self.params.model_type]
 
-        # 直接使用Hugging Face模型名称，不使用本地路径
+        # Use Hugging Face model name directly, not local path
         model_path = modelname
         self.transformer = AutoModel.from_pretrained(model_path)
 
